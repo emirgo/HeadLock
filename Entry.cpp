@@ -1,8 +1,14 @@
 #include <Windows.h>
 
+
 void Hook() 
 {
+	DWORD* local_entity = (DWORD*)0x00;
+
 	while (true) {
+		if (GetAsyncKeyState(VK_INSERT)) {
+			// write
+		}
 		Sleep(1);
 	}
 }
