@@ -1,24 +1,27 @@
+#include <iostream>
 #include <Windows.h>
+#include <TlHelp32.h>
 
 
-void Hook() 
+
+int main(void)
 {
-	DWORD* local_entity = (DWORD*)0x00;
+	HANDLE snapshot = 0;
+	PROCESSENTRY32 process_entry = { 0 };
+
+	process_entry.dwSize = sizeof(PROCESSENTRY32);
+	snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	Process32First(snapshot, &process_entry);
+
+	do {
+		if (wcscmp(process_entry.szExeFile, L"ac_client.exe") == 0) {
+			std::cout << "found" << std::endl;
+		}
+	} while (Process32Next(snapshot, &process_entry));
 
 	while (true) {
-		if (GetAsyncKeyState(VK_INSERT)) {
-			// write
-		}
-		Sleep(1);
-	}
-}
 
-BOOL WINAPI DllMain(HINSTANCE hinst_dll, DWORD fdw_reason, LPVOID lpv_reserved) 
-{
-	if (fdw_reason == DLL_PROCESS_ATTACH) {
-		MessageBox(0, 0, 0, 0);
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Hook, NULL, 0, NULL);
 	}
 
-	return true;
+	return 0;
 }
