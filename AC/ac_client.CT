@@ -19,46 +19,6 @@
         <Offset>f8</Offset>
       </Offsets>
     </CheatEntry>
-    <CheatEntry>
-      <ID>5</ID>
-      <Description>"No description"</Description>
-      <VariableType>String</VariableType>
-      <Length>8</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>ac_client.exe+FF4B8</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>6</ID>
-      <Description>"No description"</Description>
-      <VariableType>String</VariableType>
-      <Length>8</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>ac_client.exe+101C38</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>7</ID>
-      <Description>"No description"</Description>
-      <VariableType>String</VariableType>
-      <Length>9</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>ac_client.exe+101C38</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>8</ID>
-      <Description>"No description"</Description>
-      <VariableType>String</VariableType>
-      <Length>7</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>ac_client.exe+101C38</Address>
-    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
   <Structures StructVersion="2">
