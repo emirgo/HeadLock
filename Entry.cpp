@@ -5,6 +5,7 @@
 
 const char* dll_path = "C:\\dev\\headlock\\AC.dll";
 
+
 int main(void)
 {
 	HANDLE snapshot, process = 0;
@@ -15,9 +16,11 @@ int main(void)
 	Process32First(snapshot, &process_entry);
 
 	std::cout << "scanning";
+	bool found = false;
 	do {
 		std::cout << ".";
 		if (wcscmp(process_entry.szExeFile, L"ac_client.exe") == 0) {
+			found = true;
 			std::cout << "\n\n\n\n[target located]" << std::endl;
 
 			std::cout << "opening handle to: ";
@@ -54,11 +57,14 @@ int main(void)
 		}
 	} while (Process32Next(snapshot, &process_entry));
 
-	std::cout << "process finished" << std::endl;
-
-	while (true) {
-		
+	if (found) {
+		std::cout << "\n\nprocess finished" << std::endl;
 	}
+	else {
+		std::cout << "\n\nfailed to find a target [ERROR]" << std::endl;
+	}
+
+	Sleep(10000);
 
 	return 0;
 }
