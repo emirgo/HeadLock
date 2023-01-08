@@ -1,10 +1,7 @@
 #pragma once
 // ac_client.exe + 109B74
 #include <vector>
-
-struct Vector3 {
-	float x, y, z;
-};
+#include "Vector.h"
 
 class entity {
 public:
@@ -27,3 +24,4 @@ public:
 	virtual void Function8();
 	virtual void Function9();
 }; //Size: 0x0858
+static_assert(sizeof(entity) == 0x0858);

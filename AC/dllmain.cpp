@@ -12,7 +12,7 @@ void Threaded(HMODULE module)
     while (true) {
         std::uintptr_t* local_player = (std::uintptr_t*)(module_base + Offset::local_player);
         if (local_player) {
-            *(int*)(*local_player + 0xF8) = 1337;
+            *(int*)(*local_player + Offset::health) = 1337;
         }
         Sleep(1);
     }
