@@ -10,9 +10,12 @@ void Threaded(HMODULE module)
 {
     std::uintptr_t module_base = (std::uintptr_t)GetModuleHandle(L"ac_client.exe");
     while (true) {
-        std::uintptr_t* local_player = (std::uintptr_t*)(module_base + Offset::local_player);
+        // std::uintptr_t* local_player = (std::uintptr_t*)(module_base + Offset::local_player);
+        entity* local_player = *(entity**)(module_base + Offset::local_player);
+
         if (local_player) {
-            *(int*)(*local_player + Offset::health) = 1337;
+            // *(int*)(*local_player + Offset::health) = 1337;
+            local_player->health = 1337;
         }
         Sleep(1);
     }
