@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<_x202A__x206C__x200C__x200B__x206A__x200E__x202E__x202E__x202A__x206F__x200D__x206D__x202C__x206E__x206D__x202D__x200E__x206F__x202A__x202D__x200F__x206A__x206F__x200F__x206A__x200C__x206D__x200E__x206F__x206B__x206F__x202E__x200D__x206A__x206B__x200F__x200F__x206C__x206F__x200C__x202E_ xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <LastUpdateCheck>2023-01-08T21:29:22.2364662+01:00</LastUpdateCheck>
+  <Modules>
+    <_x202A__x202C__x200D__x200C__x200B__x202D__x200C__x200D__x202A__x202A__x206A__x202C__x200E__x200E__x206A__x206F__x200B__x202D__x202D__x206B__x206A__x202B__x200F__x200C__x206F__x206C__x202D__x206C__x202A__x200C__x200D__x202D__x206E__x200C__x206A__x200E__x202E__x206C__x206C__x206B__x202E_>
+      <Enable>true</Enable>
+      <Export i:nil="true" />
+      <Parameters i:nil="true" />
+      <Path>C:\dev\headlock\AC\Release\AC.dll</Path>
+    </_x202A__x202C__x200D__x200C__x200B__x202D__x200C__x200D__x202A__x202A__x206A__x202C__x200E__x200E__x206A__x206F__x200B__x202D__x202D__x206B__x206A__x202B__x200F__x200C__x206F__x206C__x202D__x206C__x202A__x200C__x200D__x202D__x206E__x200C__x206A__x200E__x202E__x206C__x206C__x206B__x202E_>
+  </Modules>
+  <Options>
+    <Advanced>
+      <DisableExceptionSupport>false</DisableExceptionSupport>
+      <DisableSEHValidation>false</DisableSEHValidation>
+      <HideFromDebugger>false</HideFromDebugger>
+      <ManualResolveImports>false</ManualResolveImports>
+    </Advanced>
+    <AutoInject>false</AutoInject>
+    <Background1>DodgerBlue</Background1>
+    <Background2>DeepSkyBlue</Background2>
+    <CloseOnInject>false</CloseOnInject>
+    <Delay>0</Delay>
+    <DelayBetween>0</DelayBetween>
+    <ErasePE>false</ErasePE>
+    <HideModule>false</HideModule>
+    <Method>4</Method>
+    <Scramble>
+      <CreateFakeDebugDirectory>true</CreateFakeDebugDirectory>
+      <CreateNewEntryPoint>true</CreateNewEntryPoint>
+      <InsertExtraSections>true</InsertExtraSections>
+      <ModifyAssemblyCode>true</ModifyAssemblyCode>
+      <ModifyImportTable>true</ModifyImportTable>
+      <MoveRelocationTable>true</MoveRelocationTable>
+      <RemoveDebugData>true</RemoveDebugData>
+      <RemoveUselessData>true</RemoveUselessData>
+      <RenameSections>true</RenameSections>
+      <ScrambleHeaderFields>true</ScrambleHeaderFields>
+      <ShiftSectionData>true</ShiftSectionData>
+      <ShiftSectionMemory>true</ShiftSectionMemory>
+      <StripSectionCharacteristics>true</StripSectionCharacteristics>
+    </Scramble>
+    <StealthInject>false</StealthInject>
+    <TextColor>White</TextColor>
+  </Options>
+  <ProcessName>ac_client.exe</ProcessName>
+  <Warnings>
+    <LdrpLoadDll>false</LdrpLoadDll>
+    <ManualMap>false</ManualMap>
+    <Scramble>true</Scramble>
+  </Warnings>
+</_x202A__x206C__x200C__x200B__x206A__x200E__x202E__x202E__x202A__x206F__x200D__x206D__x202C__x206E__x206D__x202D__x200E__x206F__x202A__x202D__x200F__x206A__x206F__x200F__x206A__x200C__x206D__x200E__x206F__x206B__x206F__x202E__x200D__x206A__x206B__x200F__x200F__x206C__x206F__x200C__x202E_>

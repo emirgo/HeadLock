@@ -8,9 +8,12 @@
 
 void Threaded(HMODULE module)
 {
-    Offset::module_base = (std::uintptr_t)GetModuleHandle(L"ac_client.exe");
+    std::uintptr_t module_base = (std::uintptr_t)GetModuleHandle(L"ac_client.exe");
     while (true) {
-
+        std::uintptr_t* local_player = (std::uintptr_t*)(module_base + Offset::local_player);
+        if (local_player) {
+            *(int*)(*local_player + 0xF8) = 1337;
+        }
         Sleep(1);
     }
 }
