@@ -12,6 +12,7 @@ uintptr_t FindDMAAddy(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> off
 
 uintptr_t ammoAddr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, { 0x374, 0x14, 0x0 });
 
+// Internal
 uintptr_t FindDMAAddy(uintptr_t ptr, std::vector<unsigned int> offsets)
 {
     uintptr_t addr = ptr;

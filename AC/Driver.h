@@ -4,6 +4,7 @@
 #include <TlHelp32.h>
 #include <vector>
 
+
 namespace Driver {
 	void Patch(BYTE* dst, BYTE* src, std::size_t size);
 	void Nop(BYTE* dst, std::size_t size);

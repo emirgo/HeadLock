@@ -2,9 +2,17 @@
 // ac_client.exe + 109B74
 #include <vector>
 #include "Vector.h"
+#include "Offset.h"
 
 class entity {
 public:
+	union {
+		DEFINE_MEMBER_N(Vector3, pos_head, 0x4);
+		DEFINE_MEMBER_N(Vector3, pos_body, 0x10);
+		DEFINE_MEMBER_N(Vector3, angle, 0x40);
+		DEFINE_MEMBER_N(int32_t, health, 0xF8);
+	};
+	/*
 	Vector3 pos_head; //0x0004
 	char pad_0010[36]; //0x0010
 	Vector3 pos_body; //0x0034
@@ -23,5 +31,6 @@ public:
 	virtual void Function7();
 	virtual void Function8();
 	virtual void Function9();
+	*/
 }; //Size: 0x0858
-static_assert(sizeof(entity) == 0x0858);
+// static_assert(sizeof(entity) == 0x0858);
