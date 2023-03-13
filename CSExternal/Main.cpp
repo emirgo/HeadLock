@@ -26,7 +26,7 @@ int main(void)
 		if (GetAsyncKeyState(VK_ESCAPE))
 			break;
 
-		if (!GetAsyncKeyState(VK_RBUTTON))
+		if (!GetAsyncKeyState(VK_LSHIFT))
 			continue;
 		
 		const auto local_player = memory.Read<std::uintptr_t>(client + offset::dwLocalPlayer);
@@ -90,7 +90,7 @@ int main(void)
 		// if we have a best angle
 		// do aim
 		if (!best_angle.IsZero())
-			memory.Write<Vector3>(client_state + offset::dwClientState_ViewAngles, view_angles + best_angle / 3.f); // smoothing
+			memory.Write<Vector3>(client_state + offset::dwClientState_ViewAngles, view_angles + best_angle / 1.f); // smoothing
 	}
 	
 	std::cout << std::endl;
