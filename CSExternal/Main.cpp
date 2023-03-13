@@ -1,4 +1,4 @@
-#include <iostream>
+#include <Windows.h>
 #include "Memory.h"
 #include "Offset.h"
 #include "Vector.h"
@@ -6,6 +6,85 @@
 #include <math.h>
 #include <cmath>
 
+#include <dwmapi.h>
+#include <d3d11.h>
+
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+LRESULT CALLBACK window_rocedure(HWND window, UINT message, WPARAM w_param, LPARAM l_param)
+{
+	if (ImGui_ImplWin32_WndProcHandler(window, message, w_param, l_param))
+	{
+		return 0;
+	}
+
+	if (message == WM_DESTROY)
+	{
+		PostQuitMessage(0);
+		return 0L;
+	}
+
+	return DefWindowProc(window, message, w_param, l_param);
+}
+
+INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
+{
+	WNDCLASSEXW wc{};
+	wc.cbSize = sizeof(WNDCLASSEXW);
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = window_rocedure;
+	wc.hInstance = instance;
+	wc.lpszClassName = L"Apalis Overlay Class";
+
+	RegisterClassExW(&wc);
+
+	const HWND window = CreateWindowExW(
+		WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED,
+		wc.lpszClassName,
+		L"Apalisware",
+		WS_POPUP,
+		0,
+		0,
+		1920,
+		1080,
+		nullptr,
+		nullptr,
+		wc.hInstance,
+		nullptr
+	);
+
+	SetLayeredWindowAttributes(window, RGB(0, 0, 0), BYTE(255), LWA_ALPHA);
+
+	{
+		RECT client_area{};
+		GetClientRect(window, &client_area);
+
+		RECT window_area{};
+		GetWindowRect(window, &window_area);
+
+		POINT diff{};
+		ClientToScreen(window, &diff);
+
+		const MARGINS margins{
+			window_area.left + (diff.x - window_area.left),
+			window_area.top + (diff.y - window_area.top),
+			client_area.right,
+			client_area.bottom
+		};
+
+		DwmExtendFrameIntoClientArea(window, &margins);
+	}
+
+	DXGI_SWAP_CHAIN_DESC sd{};
+
+	return 0;
+}
+
+/*
 int main(void)
 {
 	// init memory class
@@ -19,7 +98,7 @@ int main(void)
 	std::cout << "\nengine.dll - ";
 	(engine) ? std::cout << "OK" : std::cout << "FAIL";
 
-	while (true)
+	while (client && engine)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
@@ -105,3 +184,4 @@ int main(void)
 
 	return 0;
 }
+*/
