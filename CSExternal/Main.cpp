@@ -13,9 +13,11 @@ int main(void)
 
 	// module addresses
 	const auto client = memory.GetModuleAddress("client.dll");
-	std::cout << "\nclient.dll - " << (client) ? "OK" : "FAIL";
+	std::cout << "\nclient.dll - ";
+	(client) ? std::cout << "OK" : std::cout << "FAIL";
 	const auto engine = memory.GetModuleAddress("engine.dll");
-	std::cout << "\nengine.dll - " << (client) ? "OK" : "FAIL";
+	std::cout << "\nengine.dll - ";
+	(engine) ? std::cout << "OK" : std::cout << "FAIL";
 
 	while (true)
 	{
@@ -24,19 +26,19 @@ int main(void)
 		if (!GetAsyncKeyState(VK_RBUTTON))
 			continue;
 		
-		const auto& local_player = memory.Read<std::uintptr_t>(client + offset::dwLocalPlayer);
-		const auto& local_team = memory.Read<std::int32_t>(local_player + offset::m_iTeamNum);
+		const auto local_player = memory.Read<std::uintptr_t>(client + offset::dwLocalPlayer);
+		const auto local_team = memory.Read<std::int32_t>(local_player + offset::m_iTeamNum);
 
 		const auto local_eye_position = memory.Read<Vector3>(local_player + offset::m_vecOrigin) +
 			memory.Read<Vector3>(local_player + offset::m_vecViewOffset);
 
-		const auto& client_state = memory.Read<std::uintptr_t>(engine + offset::dwClientState);
+		const auto client_state = memory.Read<std::uintptr_t>(engine + offset::dwClientState);
 
-		const auto& view_angles = memory.Read<Vector3>(client_state + offset::dwClientState_ViewAngles);
+		const auto view_angles = memory.Read<Vector3>(client_state + offset::dwClientState_ViewAngles);
 
-		const auto& aim_punch = memory.Read<Vector3>(local_player + offset::m_aimPunchAngle) * 2;
+		const auto aim_punch = memory.Read<Vector3>(local_player + offset::m_aimPunchAngle) * 2;
 
-		// aimbot fov
+		// fov
 		auto best_fov = 5.f;
 		auto best_angle = Vector3{};
 
@@ -81,7 +83,7 @@ int main(void)
 		}
 
 		// if we have a best angle
-		// do aimbot
+		// do aim
 		if (!best_angle.IsZero())
 			memory.Write<Vector3>(client_state + offset::dwClientState_ViewAngles, view_angles + best_angle / 3.f);
 	}
