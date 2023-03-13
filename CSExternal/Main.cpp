@@ -80,6 +80,27 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 	}
 
 	DXGI_SWAP_CHAIN_DESC sd{};
+	sd.BufferDesc.RefreshRate.Numerator = 60U;
+	sd.BufferDesc.RefreshRate.Denominator = 1U;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.SampleDesc.Count = 1U;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.BufferCount = 2U;
+	sd.OutputWindow = window;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	constexpr D3D_FEATURE_LEVEL levels[2]
+	{
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_0
+	};
+
+	ID3D11Device* device{ nullptr };
+	ID3D11DeviceContext* device_context{ nullptr };
+	IDXGISwapChain* swap_chain{ nullptr };
+	ID3D11RenderTargetView* render_target_view{ nullptr };
 
 	return 0;
 }
