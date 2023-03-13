@@ -165,7 +165,34 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 		}
 	}
 
-	// clean up
+	// clean up and closing
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+
+	ImGui::DestroyContext();
+
+	if (swap_chain)
+	{
+		swap_chain->Release();
+	}
+
+	if (device_context)
+	{
+		device_context->Release();
+	}
+	
+	if (device)
+	{
+		device->Release();
+	}
+	
+	if (render_target_view)
+	{
+		render_target_view->Release();
+	}
+
+	DestroyWindow(window);
+	UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
 	return 0;
 }
