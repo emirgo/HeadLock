@@ -101,6 +101,71 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 	ID3D11DeviceContext* device_context{ nullptr };
 	IDXGISwapChain* swap_chain{ nullptr };
 	ID3D11RenderTargetView* render_target_view{ nullptr };
+	D3D_FEATURE_LEVEL level{};
+
+	// create d3d device
+	D3D11CreateDeviceAndSwapChain(
+		nullptr,
+		D3D_DRIVER_TYPE_HARDWARE,
+		nullptr,
+		0U,
+		levels,
+		2U,
+		D3D11_SDK_VERSION,
+		&sd,
+		&swap_chain,
+		&device,
+		&level,
+		&device_context
+	);
+
+	ID3D11Texture2D* back_buffer{ nullptr };
+	swap_chain->GetBuffer(0U, IID_PPV_ARGS(&back_buffer));
+
+	if (back_buffer)
+	{
+		device->CreateRenderTargetView(back_buffer, nullptr, &render_target_view);
+		back_buffer->Release();
+	}
+	else
+	{
+		return 1;
+	}
+
+	ShowWindow(window, cmd_show);
+	UpdateWindow(window);
+
+	// set theme
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+
+	// init imgui
+	ImGui_ImplWin32_Init(window);
+	ImGui_ImplDX11_Init(device, device_context);
+
+	bool running = true;
+
+	while (running)
+	{
+		MSG msg;
+		while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+
+			if (msg.message == WM_QUIT)
+			{
+				running = false;
+			}
+		}
+
+		if (!running)
+		{
+			break;
+		}
+	}
+
+	// clean up
 
 	return 0;
 }
