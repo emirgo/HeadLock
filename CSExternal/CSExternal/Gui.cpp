@@ -105,11 +105,35 @@ void gui::CreateHWindow(const char* window_name, const char* class_name) noexcep
 
 void gui::DestroyHWWindow() noexcept
 {
+	DestroyWindow(window);
+	UnregisterClass(window_class.lpszClassName, window_class.hInstance);
 }
 
 bool gui::CreateDevice() noexcept
 {
-	return false;
+	d3d = Direct3DCreate9(D3D_SDK_VERSION);
+
+	if (!d3d)
+		return false;
+
+	ZeroMemory(&present_parameters, sizeof(present_parameters));
+
+	present_parameters.Windowed = TRUE;
+	present_parameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	present_parameters.BackBufferFormat = D3DFMT_UNKNOWN;
+	present_parameters.EnableAutoDepthStencil = TRUE;
+	present_parameters.AutoDepthStencilFormat = D3DFMT_D16;
+	present_parameters.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+
+	if (d3d->CreateDevice(
+		D3DADAPTER_DEFAULT,
+		D3DDEVTYPE_HAL,
+		window,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING,
+		&present_parameters,
+		&device) < 0)
+		return false;
+
 }
 
 void gui::ResetDevice() noexcept
