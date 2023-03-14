@@ -38,5 +38,4 @@ namespace gui
 	void BeginRender() noexcept;
 	void EndRender() noexcept;
 	void Render() noexcept;
-
 }
