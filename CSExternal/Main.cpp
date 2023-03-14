@@ -31,6 +31,47 @@ LRESULT CALLBACK window_rocedure(HWND window, UINT message, WPARAM w_param, LPAR
 	return DefWindowProc(window, message, w_param, l_param);
 }
 
+struct ViewMatrix
+{
+	ViewMatrix() noexcept : data() {}
+
+	float* operator[](int index) noexcept
+	{
+		return data[index];
+	}
+
+	const float* operator[](int index) const noexcept
+	{
+		return data[index];
+	}
+
+	float data[4][4];
+};
+
+static bool world_to_screen(const Vector3& world, Vector3& screen, const ViewMatrix& vm) noexcept
+{
+	float w = vm[3][0] * world.x + vm[3][1] * world.y + vm[3][2] * world.z + vm[3][3];
+
+	if (w < 0.001f)
+	{
+		return false;
+	}
+
+	const float x = world.x * vm[0][0] + world.y * vm[0][1] + world.z * vm[0][2] + vm[0][3];
+	const float y = world.x * vm[1][0] + world.y * vm[1][1] + world.z * vm[1][2] + vm[1][3];
+
+	w = 1.f / w;
+	float nx = x * w;
+	float ny = y * w;
+
+	const ImVec2 size = ImGui::GetIO().DisplaySize;
+
+	screen.x = (size.x * 0.5f * nx) + (nx + size.x * 0.5f);
+	screen.y = -(size.y * 0.5f * ny) + (ny + size.y * 0.5f);
+
+	return true;
+}
+
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 {
 	WNDCLASSEXW wc{};
@@ -163,6 +204,71 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 		{
 			break;
 		}
+
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+
+		// ImGui::GetBackgroundDrawList()->AddCircleFilled({ 500, 500 }, 10.f, ImColor(1.0f, 0.f, 0.f));
+		// render
+		// init memory class
+		const auto memory = Memory{ "csgo.exe" };
+
+		// module addresses
+		const auto client = memory.GetModuleAddress("client.dll");
+		const auto engine = memory.GetModuleAddress("engine.dll");
+
+		if (!client || !engine)
+			ImGui::GetBackgroundDrawList()->AddCircleFilled({ 500, 500 }, 10.f, ImColor(1.0f, 0.f, 0.f));
+
+		const auto local_player = memory.Read<DWORD>(client + offset::dwLocalPlayer);
+
+		if (local_player)
+		{
+			const auto local_team = memory.Read<int>(local_player + offset::m_iTeamNum);
+			const auto view_matrix = memory.Read<ViewMatrix>(client + offset::dwViewMatrix);
+
+			for (int i = 0; i < 32; ++i)
+			{
+				const auto player = memory.Read<DWORD>(client + offset::dwEntityList * i * 0x10);
+
+				if (!player)
+				{
+					continue;
+				}
+
+				if (memory.Read<bool>(player + offset::m_bDormant))
+				{
+					continue;
+				}
+
+				if (memory.Read<int>(player + offset::m_iTeamNum) == local_team)
+				{
+					continue;
+				}
+
+				if (memory.Read<int>(player + offset::m_lifeState) != 0)
+				{
+					continue;
+				}
+
+				const auto bones = memory.Read<DWORD>(player + offset::m_dwBoneMatrix);
+				if (!bones)
+				{
+					continue;
+				}
+			}
+		}
+
+		ImGui::Render();
+
+		constexpr float color[4]{ 0.f, 0.f, 0.f, 0.f };
+		device_context->OMSetRenderTargets(1U, &render_target_view, nullptr);
+		device_context->ClearRenderTargetView(render_target_view, color);
+
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		swap_chain->Present(1U, 0U);
 	}
 
 	// clean up and closing

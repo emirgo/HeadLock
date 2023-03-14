@@ -60,3 +60,4 @@ constexpr Vector3 CalculateAngle(
 {
 	return ((enemyPosition - localPosition).ToAngle() - viewAngles);
 }
+
