@@ -50,26 +50,26 @@ struct ViewMatrix
 
 static bool world_to_screen(const Vector3& world, Vector3& screen, const ViewMatrix& vm) noexcept
 {
-	float w = vm[3][0] * world.x + vm[3][1] * world.y + vm[3][2] * world.z + vm[3][3];
+    float w = vm[3][0] * world.x + vm[3][1] * world.y + vm[3][2] * world.z + vm[3][3];
 
-	if (w < 0.001f)
+    if (w < 0.001f) 
 	{
-		return false;
-	}
+        return false;
+    }
 
-	const float x = world.x * vm[0][0] + world.y * vm[0][1] + world.z * vm[0][2] + vm[0][3];
-	const float y = world.x * vm[1][0] + world.y * vm[1][1] + world.z * vm[1][2] + vm[1][3];
+    const float x = world.x * vm[0][0] + world.y * vm[0][1] + world.z * vm[0][2] + vm[0][3];
+    const float y = world.x * vm[1][0] + world.y * vm[1][1] + world.z * vm[1][2] + vm[1][3];
 
-	w = 1.f / w;
-	float nx = x * w;
-	float ny = y * w;
+    w = 1.f / w;
+    float nx = x * w;
+    float ny = y * w;
 
-	const ImVec2 size = ImGui::GetIO().DisplaySize;
+    const ImVec2 size = ImGui::GetIO().DisplaySize;
 
-	screen.x = (size.x * 0.5f * nx) + (nx + size.x * 0.5f);
-	screen.y = -(size.y * 0.5f * ny) + (ny + size.y * 0.5f);
+    screen.x = (size.x * 0.5f * nx) + (nx + size.x * 0.5f);
+    screen.y = -(size.y * 0.5f * ny) + (ny + size.y * 0.5f);
 
-	return true;
+    return true;
 }
 
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
@@ -186,6 +186,14 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 
 	bool running = true;
 
+	// init memory class
+	const auto memory = Memory{ "csgo.exe" };
+
+	// module addresses
+	const auto client = memory.GetModuleAddress("client.dll");
+	const auto engine = memory.GetModuleAddress("engine.dll");
+	std::uintptr_t local_player = NULL;
+
 	while (running)
 	{
 		MSG msg;
@@ -211,53 +219,62 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 
 		// ImGui::GetBackgroundDrawList()->AddCircleFilled({ 500, 500 }, 10.f, ImColor(1.0f, 0.f, 0.f));
 		// render
-		// init memory class
-		const auto memory = Memory{ "csgo.exe" };
-
-		// module addresses
-		const auto client = memory.GetModuleAddress("client.dll");
-		const auto engine = memory.GetModuleAddress("engine.dll");
 
 		if (!client || !engine)
-			ImGui::GetBackgroundDrawList()->AddCircleFilled({ 500, 500 }, 10.f, ImColor(1.0f, 0.f, 0.f));
+		{
+			ImGui::GetBackgroundDrawList()->AddText({ 25, 50 }, ImColor{ 1.0f, 0.f, 0.f }, "ERROR: Game not found!");
+		}
 
-		const auto local_player = memory.Read<DWORD>(client + offset::dwLocalPlayer);
-
+		local_player = memory.Read<std::uintptr_t>(client + offset::dwLocalPlayer);
+		
 		if (local_player)
 		{
-			const auto local_team = memory.Read<int>(local_player + offset::m_iTeamNum);
+			const auto local_team = memory.Read<std::int32_t>(local_player + offset::m_iTeamNum);
 			const auto view_matrix = memory.Read<ViewMatrix>(client + offset::dwViewMatrix);
 
-			for (int i = 0; i < 32; ++i)
+			for (int i = 0; i <= 32; ++i)
 			{
-				const auto player = memory.Read<DWORD>(client + offset::dwEntityList * i * 0x10);
-
-				if (!player)
-				{
-					continue;
-				}
+				const auto& player = memory.Read<std::uintptr_t>(client + offset::dwEntityList + i * 0x10);
 
 				if (memory.Read<bool>(player + offset::m_bDormant))
 				{
 					continue;
 				}
 
-				if (memory.Read<int>(player + offset::m_iTeamNum) == local_team)
+				if (memory.Read<std::int32_t>(player + offset::m_iTeamNum) == local_team)
 				{
 					continue;
 				}
 
-				if (memory.Read<int>(player + offset::m_lifeState) != 0)
+				if (memory.Read<int>(player + offset::m_lifeState))
 				{
 					continue;
 				}
 
-				const auto bones = memory.Read<DWORD>(player + offset::m_dwBoneMatrix);
-				if (!bones)
+				const auto bone_matrix = memory.Read<std::uintptr_t>(player + offset::m_dwBoneMatrix);
+
+				const auto player_head_position = Vector3 {
+					memory.Read<float>(bone_matrix + 0x30 * 8 + 0x0C),
+					memory.Read<float>(bone_matrix + 0x30 * 8 + 0x1C),
+					memory.Read<float>(bone_matrix + 0x30 * 8 + 0x2C)
+				};
+
+				auto feet_pos = memory.Read<Vector3>(player + offset::m_vecOrigin);
+
+				Vector3 top;
+				Vector3 bottom;
+				if (world_to_screen(player_head_position + Vector3{ 0, 0, 10.f }, top, view_matrix) && world_to_screen(feet_pos - Vector3{ -5.f, 0, 5.f }, bottom, view_matrix))
 				{
-					continue;
+					const float h = abs(bottom.y - top.y);
+					const float w = h * 0.35f;
+
+					ImGui::GetBackgroundDrawList()->AddRect({ top.x - w, top.y }, { top.x + w, bottom.y }, ImColor(0.f, 1.f, 0.f));
 				}
 			}
+		}
+		else
+		{
+			ImGui::GetBackgroundDrawList()->AddText({ 1920/2-50, 1080-25 }, ImColor(1.0f, 0.f, 0.f), "Waiting for game");
 		}
 
 		ImGui::Render();

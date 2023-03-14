@@ -159,7 +159,6 @@
     <ClInclude Include="..\Memory.h" />
     <ClInclude Include="..\Offset.h" />
     <ClInclude Include="..\Vector.h" />
-    <ClInclude Include="WorldToScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
